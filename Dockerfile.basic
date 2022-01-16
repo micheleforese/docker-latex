@@ -1,0 +1,41 @@
+FROM debian:11
+
+
+LABEL mantainer="Michele Forese"
+LABEL email="michele.forese.personal@gmail.com"
+LABEL name="latex.basic"
+LABEL version="0.1"
+
+ENV DEBIAN_FRONTEND noninteractive
+ARG LATEX_VERSION=2021
+
+RUN apt-get update -q \
+  && apt-get install -qy build-essential wget libfontconfig1 \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install TexLive with scheme-basic
+RUN wget http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+
+RUN	mkdir /install-tl-unx; \
+  tar -xvf install-tl-unx.tar.gz -C /install-tl-unx --strip-components=1; \
+  echo "selected_scheme scheme-basic" >> /install-tl-unx/texlive.profile; \
+  /install-tl-unx/install-tl -profile /install-tl-unx/texlive.profile; \
+  rm -r /install-tl-unx; \
+  rm install-tl-unx.tar.gz
+
+# Sets the environmental variables
+ENV PATH="/usr/local/texlive/${LATEX_VERSION}/bin/x86_64-linux:${PATH}"
+ENV MANPATH="/usr/local/texlive/${LATEX_VERSION}/texmf-dist/doc/man:${MANPATH}"
+ENV INFOPATH="/usr/local/texlive/${LATEX_VERSION}/texmf-dist/doc/info:${INFOPATH}"
+
+ENV HOME /data
+WORKDIR /data
+VOLUME ["/data"]
+
+# Updates tlmgr and the packages
+RUN tlmgr update --self
+RUN tlmgr option repository ctan
+RUN tlmgr update --all
+
+# Install LatexMk
+RUN tlmgr install latexmk

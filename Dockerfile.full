@@ -1,0 +1,14 @@
+FROM micheleforese/latex:basic
+
+LABEL mantainer="Michele Forese"
+LABEL email="michele.forese.personal@gmail.com"
+LABEL name="latex.basic"
+LABEL version="0.1"
+
+RUN tlmgr install scheme-full
+
+# Install LatexIndent with the per packages
+RUN tlmgr install latexindent
+RUN cpan YAML/Tiny.pm
+RUN cpan File/HomeDir.pm
+RUN cpan Unicode/GCString.pm
