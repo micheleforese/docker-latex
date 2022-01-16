@@ -2,8 +2,10 @@ FROM micheleforese/latex:basic
 
 LABEL mantainer="Michele Forese"
 LABEL email="michele.forese.personal@gmail.com"
-LABEL name="latex.basic"
+LABEL name="latex.full"
 LABEL version="0.1"
+
+ENV DEBIAN_FRONTEND noninteractive
 
 RUN tlmgr install scheme-full
 
