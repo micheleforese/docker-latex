@@ -1,4 +1,6 @@
-FROM micheleforese/latex:basic
+ARG LATEX_VERSION=2021
+
+FROM micheleforese/latex:$LATEX_VERSION-basic
 
 LABEL mantainer="Michele Forese"
 LABEL email="michele.forese.personal@gmail.com"
@@ -14,3 +16,8 @@ RUN tlmgr install latexindent
 RUN cpan YAML/Tiny.pm
 RUN cpan File/HomeDir.pm
 RUN cpan Unicode/GCString.pm
+
+# Install PostScript with GhostScript
+RUN apt update -q \
+  && apt install -qy ghostscript \
+  && rm -rf /var/lib/apt/lists/*
